@@ -8,7 +8,6 @@
 
 * { box-sizing: border-box; }
 
-/* BODY */
 body {
   margin: 0;
   font-family: "Poppins", sans-serif;
@@ -24,12 +23,11 @@ header {
   color: #fff;
 }
 h1 { margin: 0; font-size: 28px; }
+.tagline { opacity: 0.85; margin-top:6px; font-size:13px; }
 
-/* LAYOUT */
-.page { padding: 20px; }
+/* PAGE */
+.page { padding: 20px; min-height: calc(100vh - 120px); }
 .center-wrap { display: flex; justify-content: center; }
-
-/* CARD */
 .card {
   width: 380px;
   background: var(--card);
@@ -37,9 +35,9 @@ h1 { margin: 0; font-size: 28px; }
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(14,20,30,0.06);
 }
+
 label { font-size: 13px; color: var(--muted); }
 
-/* INPUTS */
 input, select {
   width: 100%;
   padding: 10px 12px;
@@ -48,7 +46,7 @@ input, select {
   border: 1px solid #d0d5db;
 }
 
-/* BUTTON */
+/* GENERATE BUTTON */
 button[type="submit"] {
   padding: 12px;
   background: #111;
@@ -57,6 +55,7 @@ button[type="submit"] {
   border: none;
   cursor: pointer;
 }
+button[type="submit"]:hover { background: #222; }
 
 /* FLOATING CHAT ICON */
 #chatIcon {
@@ -68,22 +67,23 @@ button[type="submit"] {
   border-radius: 50%;
   border: none;
   background: #fff;
-  font-size: 20px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
   cursor: pointer;
-  z-index: 1200;
+  font-size: 20px;
+  z-index: 1400;
 }
 
 /* OVERLAY */
-.hidden { display: none !important; }
 #chatOverlay {
   position: fixed;
   inset: 0;
   background: transparent;
-  z-index: 1100;
+  display: none;
+  z-index: 1500;
 }
+#chatOverlay.visible { display: block; }
 
-/* CHAT WINDOW */
+/* CHAT POPUP */
 #chatModal {
   position: fixed;
   bottom: 80px;
@@ -91,31 +91,48 @@ button[type="submit"] {
   width: 340px;
   background: var(--card);
   border-radius: 12px;
-  box-shadow: 0 18px 50px rgba(0,0,0,0.25);
   display: none;
   flex-direction: column;
-  z-index: 1300;
+  overflow: hidden;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.25);
+  opacity: 0;
+  transform: translateY(8px);
+  z-index: 1600;
+  transition: opacity .18s, transform .18s;
+}
+#chatModal.visible {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* HEADER */
+/* CHAT HEADER */
 .modal-header {
-  padding: 10px;
+  position: relative;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
   background: #000;
   color: #fff;
-  position: relative;
 }
+.modal-header h3 { margin: 0; font-size: 15px; }
+
+/* CLOSE (X) BUTTON */
 .close-btn {
   position: absolute;
-  right: 10px;
-  top: 6px;
-  background: none;
-  border: none;
-  color: #fff;
+  right: 12px;
+  top: 8px;
   font-size: 18px;
+  border: none;
+  background: none;
   cursor: pointer;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 6px;
+  border-radius: 6px;
 }
+.close-btn:hover { opacity: 0.8; }
 
-/* CHAT MESSAGES */
+/* MESSAGES AREA */
 .chat-messages {
   height: 300px;
   padding: 12px;
@@ -140,31 +157,52 @@ button[type="submit"] {
   color: #003366;
 }
 
-/* CHAT FORM */
+/* CHAT INPUT + CIRCULAR SEND BUTTON */
 .chat-form {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px;
+  padding: 10px 12px;
   border-top: 1px solid #eee;
 }
+
+/* INPUT – clean & aligned */
 .chat-form input {
   flex: 1;
   height: 40px;
   padding: 0 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
 }
+
+/* CIRCULAR SEND BUTTON */
 .chat-form button {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  padding: 0;
+  border-radius: 50%;       /* ★ CIRCLE */
   background: var(--accent);
-  color: #fff;
+  color: white;
   border: none;
   cursor: pointer;
-  font-size: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 18px;          /* arrow size */
+  flex-shrink: 0;
+}
+.chat-form button:hover {
+  opacity: 0.9;
+}
+
+/* UTILITY */
+.hidden { display: none !important; }
+
+/* RESPONSIVE */
+@media (max-width:480px){
+  .card { width: 92%; padding: 16px; }
+  #chatModal { width: 92%; right: 4%; bottom: 70px; }
+  #chatIcon { right: 12px; bottom: 12px; }
 }
