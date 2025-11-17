@@ -16,18 +16,19 @@
     <section class="center-wrap">
       <div class="card" id="dietCard">
         <h2>Diet Planner</h2>
+        <!-- note: form uses onsubmit to prevent full reload -->
         <form id="dietForm" onsubmit="event.preventDefault(); generatePlan();">
-          <label>Age</label>
-          <input type="number" id="age" placeholder="Enter your age" />
+          <label for="age">Age</label>
+          <input type="number" id="age" name="age" placeholder="Enter your age" />
 
-          <label>Weight (kg)</label>
-          <input type="number" id="weight" placeholder="Enter weight" />
+          <label for="weight">Weight (kg)</label>
+          <input type="number" id="weight" name="weight" placeholder="Enter weight" />
 
-          <label>Height (cm)</label>
-          <input type="number" id="height" placeholder="Enter height" />
+          <label for="height">Height (cm)</label>
+          <input type="number" id="height" name="height" placeholder="Enter height" />
 
-          <label>Activity Level</label>
-          <select id="activity">
+          <label for="activity">Activity Level</label>
+          <select id="activity" name="activity" aria-label="Activity level">
             <option value="1.2">Sedentary</option>
             <option value="1.375">Light Activity</option>
             <option value="1.55">Moderate</option>
@@ -37,36 +38,40 @@
           <button type="submit">Generate Plan</button>
         </form>
 
-        <div id="result"></div>
+        <div id="result" aria-live="polite"></div>
       </div>
     </section>
   </main>
 
-  <!-- Small Floating Chat Icon (extension-style) -->
+  <!-- small floating chat icon (must have id chatIcon) -->
   <button id="chatIcon" aria-label="Open VyantraH chat" title="Ask VyantraH"> 
     <span class="bot-emoji">💬</span>
   </button>
 
-  <!-- Transparent overlay (click outside to close) -->
+  <!-- transparent overlay (initially hidden) -->
   <div id="chatOverlay" class="hidden" aria-hidden="true"></div>
 
-  <!-- Chat modal popup (bottom-right anchored) -->
+  <!-- chat modal popup anchored bottom-right (initially hidden) -->
   <aside id="chatModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="chatTitle">
     <header class="modal-header">
       <h3 id="chatTitle">Trainer Chatbot</h3>
+      <!-- close button must have id closeChat -->
       <button id="closeChat" class="close-btn" aria-label="Close chat">✕</button>
     </header>
 
+    <!-- messages area must have id chatMessages -->
     <div id="chatMessages" class="chat-messages" aria-live="polite">
       <div class="msg bot">Hi! I am VyantraH. Ask me about diet or simple wellness tips.</div>
     </div>
 
+    <!-- chat form must have id chatForm and input id chatInput -->
     <form id="chatForm" class="chat-form" autocomplete="off">
-      <input id="chatInput" type="text" placeholder="Type your question..." />
+      <input id="chatInput" type="text" name="chat" placeholder="Type your question..." />
       <button type="submit" id="sendBtn">Send</button>
     </form>
   </aside>
 
+  <!-- important: script at end so DOM elements exist; your script.js has DOMContentLoaded guard too -->
   <script src="script.js"></script>
 </body>
 </html>
