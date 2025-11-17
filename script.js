@@ -1,173 +1,81 @@
-:root {
-  --bg: #f7f7f7;
-  --card: #ffffff;
-  --primary: #111;
-  --accent: #1f8feb;
-  --muted: #666;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  background: var(--bg);
-  color: var(--primary);
-}
+document.addEventListener('DOMContentLoaded', () => {
 
-/* HEADER */
-header {
-  text-align: center;
-  padding: 18px 12px;
-  background: #111;
-  color: #fff;
-}
-h1 { margin: 0; font-size: 28px; }
-.tagline { opacity: 0.85; }
+  const chatIcon = document.getElementById('chatIcon');
+  const chatModal = document.getElementById('chatModal');
+  const chatOverlay = document.getElementById('chatOverlay');
+  const closeChat = document.getElementById('closeChat');
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const chatMessages = document.getElementById('chatMessages');
 
-/* PAGE */
-.page { padding: 20px; }
-.center-wrap { display: flex; justify-content: center; }
-.card {
-  width: 380px;
-  background: var(--card);
-  padding: 22px;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(14,20,30,0.06);
-}
-label { font-size: 13px; color: var(--muted); }
-input, select {
-  width: 100%;
-  padding: 10px 12px;
-  margin: 8px 0 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-button[type="submit"] {
-  padding: 12px;
-  background: #111;
-  color: #fff;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-}
-button[type="submit"]:hover {
-  background: #222;
-}
+  function openChat() {
+    if (!chatModal || !chatOverlay) return;
+    chatOverlay.classList.remove('hidden');
+    chatModal.classList.remove('hidden');
+    chatOverlay.classList.add('visible');
+    chatModal.classList.add('visible');
+    chatOverlay.style.display = "block";
+    chatModal.style.display = "flex";
+    setTimeout(() => chatInput && chatInput.focus(), 120);
+  }
 
-/* FLOATING CHAT ICON */
-#chatIcon {
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: none;
-  background: #fff;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-  cursor: pointer;
-  font-size: 20px;
-}
+  function closeChatWindow() {
+    if (!chatModal || !chatOverlay) return;
+    chatModal.classList.remove('visible');
+    chatOverlay.classList.remove('visible');
+    setTimeout(() => {
+      chatModal.classList.add('hidden');
+      chatOverlay.classList.add('hidden');
+      chatModal.style.display = "none";
+      chatOverlay.style.display = "none";
+    }, 200);
+  }
 
-/* OVERLAY */
-#chatOverlay {
-  position: fixed;
-  inset: 0;
-  background: transparent;
-  display: none;
-  z-index: 1500;
-}
-#chatOverlay.visible { display: block; }
+  function appendMessage(sender, text) {
+    if (!chatMessages) return;
+    const m = document.createElement('div');
+    m.className = `msg ${sender}`;
+    m.textContent = text;
+    chatMessages.appendChild(m);
+    chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
+  }
 
-/* CHAT POPUP */
-#chatModal {
-  position: fixed;
-  bottom: 80px;
-  right: 18px;
-  width: 340px;
-  background: var(--card);
-  border-radius: 12px;
-  display: none;
-  box-shadow: 0 18px 50px rgba(0,0,0,0.25);
-  flex-direction: column;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(8px);
-  z-index: 1600;
-  transition: opacity .18s, transform .18s;
-}
-#chatModal.visible {
-  display: flex;
-  opacity: 1;
-  transform: translateY(0);
-}
+  if (chatIcon) chatIcon.addEventListener('click', openChat);
+  if (closeChat) closeChat.addEventListener('click', closeChatWindow);
+  if (chatOverlay) chatOverlay.addEventListener('click', closeChatWindow);
+  document.addEventListener('keydown', e => { if (e.key === "Escape") closeChatWindow(); });
 
-/* HEADER */
-.modal-header {
-  position: relative;
-  padding: 10px 12px;
-  border-bottom: 1px solid #eee;
-}
-.close-btn {
-  position: absolute;
-  right: 10px;
-  top: 8px;
-  font-size: 18px;
-  border: none;
-  background: none;
-  cursor: pointer;
-}
+  if (chatForm) {
+    chatForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      if (!text) return;
+      appendMessage('you', text);
+      chatInput.value = '';
+      setTimeout(() => appendMessage('bot', 'Working on your question…'), 300);
+    });
+  }
 
-/* MESSAGES */
-.chat-messages {
-  height: 300px;
-  padding: 12px;
-  overflow-y: auto;
-  background: #fbfbfd;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.msg {
-  max-width: 85%;
-  padding: 10px 12px;
-  border-radius: 10px;
-}
-.msg.you {
-  align-self: flex-end;
-  background: #111;
-  color: #fff;
-}
-.msg.bot {
-  background: #eef6ff;
-  color: #003366;
-}
+  // DIET PLAN (basic)
+  window.generatePlan = function () {
+    const age = document.getElementById("age").value;
+    const weight = document.getElementById("weight").value;
+    const height = document.getElementById("height").value;
+    const activity = parseFloat(document.getElementById("activity").value || "1.2");
+    const resultDiv = document.getElementById("result");
 
-/* CHAT INPUT + SMALL SEND BUTTON */
-.chat-form {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 12px;
-  border-top: 1px solid #eee;
-}
-.chat-form input {
-  flex: 1;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-.chat-form button {
-  padding: 6px 10px;
-  min-width: 40px;
-  max-width: 45px;
-  height: 38px;
-  font-size: 16px;
-  border-radius: 8px;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-}
+    if (!age || !weight || !height) {
+      resultDiv.innerHTML = "<p>Please fill all the details.</p>";
+      return;
+    }
 
-/* UTILITY */
-.hidden { display: none !important; }
+    const bmr = 10 * Number(weight) + 6.25 * Number(height) - 5 * Number(age) + 5;
+    const calories = Math.round(bmr * activity);
+
+    resultDiv.innerHTML = `
+      <h3>Your Estimated Calories: ${calories}</h3>
+      <p>• Eat homemade Indian food.<br>• Add fruits.<br>• Include dal, paneer, eggs or chana.</p>
+    `;
+  };
+
+});
