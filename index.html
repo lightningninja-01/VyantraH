@@ -44,26 +44,26 @@
     </section>
   </main>
 
-  <!-- Floating bot icon -->
+  <!-- Floating Chat Icon -->
   <button id="chatIcon" title="Chat"><span class="bot-emoji">💬</span></button>
 
-  <!-- Overlay (must exist and have id chatOverlay) -->
-  <div id="chatOverlay" class="hidden" aria-hidden="true"></div>
+  <!-- Overlay -->
+  <div id="chatOverlay" class="hidden"></div>
 
-  <!-- Chat Window -->
-  <aside id="chatModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="chatTitle">
+  <!-- Chat Modal -->
+  <aside id="chatModal" class="hidden">
     <header class="modal-header">
-      <h3 id="chatTitle">Trainer Chatbot</h3>
-      <button id="closeChat" class="close-btn" aria-label="Close chat">✕</button>
+      <h3>Trainer Chatbot</h3>
+      <button id="closeChat" class="close-btn">✕</button>
     </header>
 
-    <div id="chatMessages" class="chat-messages" aria-live="polite">
-      <div class="msg bot">Hi! I am VyantraH — ask me about diet & wellness.</div>
+    <div id="chatMessages" class="chat-messages">
+      <div class="msg bot">Hi! I’m VyantraH, ask me anything about diet & wellness.</div>
     </div>
 
-    <form id="chatForm" class="chat-form" autocomplete="off">
-      <input id="chatInput" type="text" placeholder="Type your question..." />
-      <button id="sendBtn" type="submit" title="Send">➤</button>
+    <form id="chatForm" class="chat-form">
+      <input id="chatInput" type="text" placeholder="Type your question...">
+      <button id="sendBtn" type="submit">➤</button>
     </form>
   </aside>
 
