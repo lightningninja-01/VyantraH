@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function openChat() {
     if (!safeEl(chatModal) || !safeEl(chatOverlay) || !safeEl(chatInput) || !safeEl(chatIcon)) return;
-
     chatOverlay.classList.remove('hidden');
     chatModal.classList.remove('hidden');
     chatOverlay.classList.add('visible');
@@ -22,21 +21,16 @@ document.addEventListener('DOMContentLoaded', () => {
     chatOverlay.setAttribute('aria-hidden', 'false');
     chatModal.setAttribute('aria-hidden', 'false');
     chatIcon.setAttribute('aria-expanded', 'true');
-
-    setTimeout(() => {
-      try { chatInput.focus(); } catch (e) {}
-    }, 120);
+    setTimeout(() => { try { chatInput.focus(); } catch (e) {} }, 120);
   }
 
   function closeChatWindow() {
     if (!safeEl(chatModal) || !safeEl(chatOverlay) || !safeEl(chatIcon)) return;
-
     chatModal.classList.remove('visible');
     chatOverlay.classList.remove('visible');
     chatOverlay.setAttribute('aria-hidden', 'true');
     chatModal.setAttribute('aria-hidden', 'true');
     chatIcon.setAttribute('aria-expanded', 'false');
-
     setTimeout(() => {
       chatModal.classList.add('hidden');
       chatOverlay.classList.add('hidden');
@@ -72,146 +66,147 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // -------------------------
-  // PERSONALIZED DIET GENERATOR
+  // PERSONALIZED DIET GENERATOR (corrected + debug)
   // -------------------------
-  // Uses Mifflin-St Jeor BMR formula:
-  //   BMR_male   = 10*weight + 6.25*height - 5*age + 5
-  //   BMR_female = 10*weight + 6.25*height - 5*age - 161
-  //
-  // activity multipliers (same as UI): 1.2, 1.375, 1.55, 1.725, 1.9
-  // Goals:
-  //   - maintain: TDEE (calorie_target = TDEE)
-  //   - lose (slow): TDEE - 300
-  //   - lose_fast: TDEE - 600
-  //   - gain: TDEE + 300
-  //
-  // Macronutrient strategy (sensible defaults, adjustable later):
-  //   - Protein: 1.6 g/kg (active) or 1.2 g/kg (sedentary) — we pick 1.6 if activity >=1.55
-  //   - Fat: 25% of calories (min ~0.7 g/kg)
-  //   - Carbs: remaining calories
-  //
-  // Sample Indian meal suggestions are mapped to calorie bands.
-  // Disclaimer included in the result for safety.
-
   window.generatePlan = function () {
-    const age = Number(document.getElementById('age')?.value);
-    const gender = document.getElementById('gender')?.value || 'male';
-    const weight = Number(document.getElementById('weight')?.value);
-    const height = Number(document.getElementById('height')?.value);
-    const activity = Number(document.getElementById('activity')?.value) || 1.2;
-    const goal = document.getElementById('goal')?.value || 'maintain';
+    const ageEl = document.getElementById('age');
+    const genderEl = document.getElementById('gender');
+    const weightEl = document.getElementById('weight');
+    const heightEl = document.getElementById('height');
+    const activityEl = document.getElementById('activity');
+    const goalEl = document.getElementById('goal');
     const resultDiv = document.getElementById('result');
 
-    // basic validation
-    if (!age || !weight || !height) {
-      resultDiv.innerHTML = '<p>Please fill age, weight and height correctly.</p>';
+    if (!ageEl || !weightEl || !heightEl || !resultDiv) {
+      console.error("Missing required elements for generatePlan()");
       return;
     }
 
-    // BMR
+    // Read values (defensive)
+    const age = Number(ageEl.value);
+    const weight = Number(weightEl.value);
+    const height = Number(heightEl.value);
+    const gender = (genderEl?.value || 'male').toLowerCase();
+    const activity = Number(activityEl?.value) || 1.2;
+    const goal = goalEl?.value || 'maintain';
+
+    // Debug info (open DevTools Console to inspect)
+    console.log("generatePlan inputs:", { age, weight, height, gender, activity, goal });
+
+    // Validation
+    if (!age || age < 10 || age > 120) {
+      resultDiv.innerHTML = "<p>Please enter a valid age (10–120).</p>";
+      return;
+    }
+    if (!weight || weight < 20 || weight > 700) {
+      resultDiv.innerHTML = "<p>Please enter a valid weight in kg (20–700).</p>";
+      return;
+    }
+    if (!height || height < 80 || height > 300) {
+      resultDiv.innerHTML = "<p>Please enter a valid height in cm (80–300).</p>";
+      return;
+    }
+
+    // BMR (Mifflin-St Jeor) — correct formulas
     let bmr;
-    if (gender === 'female') {
+    if (gender === 'female' || gender === 'f') {
       bmr = 10 * weight + 6.25 * height - 5 * age - 161;
     } else {
       bmr = 10 * weight + 6.25 * height - 5 * age + 5;
     }
 
-    // TDEE
+    // Defensive: ensure bmr is sane
+    if (Number.isNaN(bmr) || !isFinite(bmr)) {
+      resultDiv.innerHTML = "<p>Calculation error — please check inputs.</p>";
+      console.error("BMR NaN or infinite:", bmr);
+      return;
+    }
+
     const tdee = Math.round(bmr * activity);
 
-    // goal adjustments
+    // Goals adjustments (safe)
     let calorieTarget = tdee;
     if (goal === 'lose') calorieTarget = Math.round(tdee - 300);
-    if (goal === 'lose_fast') calorieTarget = Math.round(tdee - 600);
-    if (goal === 'gain') calorieTarget = Math.round(tdee + 300);
+    else if (goal === 'lose_fast') calorieTarget = Math.round(tdee - 600);
+    else if (goal === 'gain') calorieTarget = Math.round(tdee + 300);
 
-    // macronutrients
-    const proteinPerKg = activity >= 1.55 ? 1.6 : 1.2; // g/kg
+    // Macronutrients (same approach as before)
+    const proteinPerKg = activity >= 1.55 ? 1.6 : 1.2;
     const proteinG = Math.max(Math.round(proteinPerKg * weight), Math.round(1.2 * weight));
     const proteinCals = proteinG * 4;
 
-    // fat: 25% calories, but ensure min fat grams ~0.7 g/kg
     const fatCals = Math.round(calorieTarget * 0.25);
     const fatG = Math.max(Math.round(fatCals / 9), Math.round(0.7 * weight));
 
-    // carbs: remainder
     const remainingCals = calorieTarget - (proteinCals + fatG * 9);
     const carbsG = Math.max(Math.round(remainingCals / 4), 0);
 
-    // quick nutrient percentages
     const pctProtein = Math.round((proteinCals / calorieTarget) * 100);
     const pctFat = Math.round((fatG * 9 / calorieTarget) * 100);
     const pctCarb = Math.round((carbsG * 4 / calorieTarget) * 100);
 
-    // meal suggestions based on calorieTarget range
+    // Meal suggestions (same buckets)
     function sampleMeals(cal) {
-      // rough buckets
       if (cal <= 1400) {
         return {
-          breakfast: "1 large bowl of poha/upma + 1 boiled egg or 50g paneer",
+          breakfast: "1 bowl poha/upma + 1 boiled egg or 50g paneer",
           mid: "1 small banana + handful roasted chana",
-          lunch: "1 medium chapati + 1 cup dal + 1 cup mixed vegetables (homemade) + salad",
-          eve: "buttermilk or chaas",
-          dinner: "1 medium bowl khichdi or 1 chapati + sabzi",
+          lunch: "1 chapati + 1 cup dal + 1 cup mixed veg + salad",
+          eve: "buttermilk",
+          dinner: "1 bowl khichdi or 1 chapati + sabzi",
           notes: "Prefer whole grains, limit fried snacks."
         };
       } else if (cal <= 1800) {
         return {
-          breakfast: "2 parathas (light) or 2 slices bread + 1 egg/curd",
-          mid: "fruit (apple/banana) + 10 almonds",
-          lunch: "2 chapatis + 1 cup dal + veg + small bowl curd",
+          breakfast: "2 light parathas or 2 slices bread + curd/egg",
+          mid: "fruit + 10 almonds",
+          lunch: "2 chapatis + dal + veg + small curd",
           eve: "tea (less sugar) + roasted peanuts",
           dinner: "1 cup rice + dal + sabzi or 2 chapatis + paneer sabzi",
-          notes: "Add pulses and veggies; watch oil portion."
+          notes: "Control oil, include pulses."
         };
       } else if (cal <= 2200) {
         return {
-          breakfast: "2 stuffed parathas (light) or oats upma + 1 glass milk",
-          mid: "fruit + handful peanuts",
-          lunch: "2 chapatis + 1 bowl sabzi + 1 bowl rice + dal",
-          eve: "sprouts chaat or chana chaat",
-          dinner: "1.5 cups rice / 2 chapatis + protein (eggs/paneer/chicken)",
-          notes: "Include protein source every meal; add salad."
+          breakfast: "2 parathas or oats upma + 1 glass milk",
+          mid: "fruit + peanuts",
+          lunch: "2 chapatis + sabzi + rice + dal",
+          eve: "sprouts chaat",
+          dinner: "1.5 cups rice or 2 chapatis + protein (eggs/paneer)",
+          notes: "Include protein every meal; add salad."
         };
       } else {
         return {
-          breakfast: "Large paratha / poha + 2 eggs or paneer bhurji + milk",
+          breakfast: "Large paratha/poha + 2 eggs/paneer + milk",
           mid: "nuts + fruit",
-          lunch: "3 chapatis + rice + 1 cup dal + sabzi + curd",
+          lunch: "3 chapatis + rice + dal + sabzi + curd",
           eve: "sprouts / chana + buttermilk",
-          dinner: "Rice/roti + protein-heavy dish (dal/paneer/chicken/fish)",
-          notes: "Higher carbs for energy; distribute across meals."
+          dinner: "Rice/roti + protein-heavy dish",
+          notes: "Higher carbs; distribute across meals."
         };
       }
     }
 
     const meals = sampleMeals(calorieTarget);
 
-    // homemade supplement / add-on suggestions (cheap + local)
+    // supplements & tips
     const supplements = [];
-    supplements.push("Roasted peanuts – affordable, good fats & protein.");
-    supplements.push("Ghee in small amounts for energy and taste (homemade).");
-    supplements.push("Seasonal fruits (banana, guava, papaya) for fiber & vitamins.");
-    supplements.push("Sprouted moong / chana — great protein & cheap.");
-    if (calorieTarget < tdee && goal.startsWith('lose')) {
-      supplements.push("Green tea (unsweetened) for hydration and mild metabolic boost.");
-    } else {
-      supplements.push("Roasted chana or peanut chikki for quick calories (homemade).");
-    }
+    supplements.push("Roasted peanuts — good fats & protein.");
+    supplements.push("Seasonal fruits for fiber & vitamins.");
+    supplements.push("Sprouted moong/chana — cheap protein.");
+    if (calorieTarget < tdee && goal.startsWith('lose')) supplements.push("Green tea (unsweetened) if desired.");
+    else supplements.push("Roasted chana / peanut chikki for quick calories (homemade).");
 
-    // trainer tips (quick)
-    const tips = [];
-    tips.push("Eat protein (eggs/dal/paneer) with every main meal.");
-    tips.push("Prefer home-cooked meals; control oil portions.");
-    tips.push("Hydrate: 2–3L water daily depending on activity.");
-    if (activity >= 1.55) tips.push("Increase protein slightly if doing resistance training.");
-    if (goal.startsWith('lose')) tips.push("Aim for slow consistent loss (0.25–0.5 kg/week).");
+    const tips = [
+      "Eat protein (eggs/dal/paneer) every main meal.",
+      "Prefer home-cooked food and control oil portion.",
+      "Hydrate well (2–3L depending on activity)."
+    ];
+    if (activity >= 1.55) tips.push("If doing resistance training, increase protein slightly.");
 
-    // build result HTML
+    // Render result
     resultDiv.innerHTML = `
-      <h3>Personalized Summary</h3>
+      <h3>Your Estimated Calories: ${calorieTarget.toLocaleString()}</h3>
       <p><strong>BMR:</strong> ${Math.round(bmr)} kcal/day &middot; <strong>TDEE:</strong> ${tdee} kcal/day</p>
-      <p><strong>Target Calories (${goal.replace('_',' ')}):</strong> <strong>${calorieTarget}</strong> kcal/day</p>
 
       <h4>Macronutrients</h4>
       <ul>
@@ -220,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <li>Carbs: ${carbsG} g/day (~${pctCarb}% of calories)</li>
       </ul>
 
-      <h4>Sample Meal Plan (Indian-style)</h4>
+      <h4>Sample Meal Plan</h4>
       <p><strong>Breakfast:</strong> ${meals.breakfast}</p>
       <p><strong>Mid:</strong> ${meals.mid}</p>
       <p><strong>Lunch:</strong> ${meals.lunch}</p>
@@ -228,23 +223,22 @@ document.addEventListener('DOMContentLoaded', () => {
       <p><strong>Dinner:</strong> ${meals.dinner}</p>
       <p style="font-size:.95em;color:#555"><em>${meals.notes}</em></p>
 
-      <h4>Handy Supplements / Add-ons (homemade & cheap)</h4>
+      <h4>Homemade Add-ons</h4>
       <ul>
         ${supplements.map(s => `<li>${s}</li>`).join('')}
       </ul>
 
       <h4>Trainer Tips</h4>
-      <ul>
-        ${tips.map(t => `<li>${t}</li>`).join('')}
-      </ul>
+      <ul>${tips.map(t => `<li>${t}</li>`).join('')}</ul>
 
-      <p style="font-size:0.9em;color:#666;margin-top:10px">
-      <strong>Disclaimer:</strong> This is a general guideline only — not medical advice. For health conditions or personalized clinical plans consult a registered dietitian/doctor.
-      </p>
+      <p style="font-size:0.9em;color:#666;margin-top:8px"><strong>Disclaimer:</strong> This is general guidance, not medical advice. Consult a professional for medical conditions.</p>
     `;
 
-    // small UX: scroll to result
+    // scroll into view
     resultDiv.scrollIntoView({ behavior: 'smooth' });
+
+    // debug log final numbers
+    console.log("generatePlan result:", { bmr: Math.round(bmr), tdee, calorieTarget, proteinG, fatG, carbsG });
   };
 
 });
