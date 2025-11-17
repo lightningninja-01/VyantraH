@@ -1,62 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VyantraH – Your Wellness Mate</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>VyantraH – Your Wellness Mate</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <header>
+    <h1>VyantraH</h1>
+    <p class="tagline">Your Daily Wellness, Sorted.</p>
+  </header>
 
-    <header>
-        <h1>VyantraH</h1>
-        <p class="tagline">Your Daily Wellness, Sorted.</p>
+  <main class="page">
+    <section class="center-wrap">
+      <div class="card" id="dietCard">
+        <h2>Diet Planner</h2>
+        <form id="dietForm" onsubmit="event.preventDefault(); generatePlan();">
+          <label>Age</label>
+          <input type="number" id="age" placeholder="Enter your age" />
+
+          <label>Weight (kg)</label>
+          <input type="number" id="weight" placeholder="Enter weight" />
+
+          <label>Height (cm)</label>
+          <input type="number" id="height" placeholder="Enter height" />
+
+          <label>Activity Level</label>
+          <select id="activity">
+            <option value="1.2">Sedentary</option>
+            <option value="1.375">Light Activity</option>
+            <option value="1.55">Moderate</option>
+            <option value="1.725">Very Active</option>
+          </select>
+
+          <button type="submit">Generate Plan</button>
+        </form>
+
+        <div id="result"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Small Floating Chat Icon (extension-style) -->
+  <button id="chatIcon" aria-label="Open VyantraH chat" title="Ask VyantraH"> 
+    <span class="bot-emoji">💬</span>
+  </button>
+
+  <!-- Chat modal popup (hidden by default) -->
+  <div id="chatOverlay" class="hidden"></div>
+
+  <aside id="chatModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="chatTitle">
+    <header class="modal-header">
+      <h3 id="chatTitle">Trainer Chatbot</h3>
+      <button id="closeChat" aria-label="Close chat">✕</button>
     </header>
 
-    <section class="container">
-        <div class="card" id="dietCard">
-            <h2>Diet Planner</h2>
-            <form id="dietForm">
-                <label>Age</label>
-                <input type="number" id="age" placeholder="Enter your age">
-
-                <label>Weight (kg)</label>
-                <input type="number" id="weight" placeholder="Enter weight">
-
-                <label>Height (cm)</label>
-                <input type="number" id="height" placeholder="Enter height">
-
-                <label>Activity Level</label>
-                <select id="activity">
-                    <option value="1.2">Sedentary</option>
-                    <option value="1.375">Light Activity</option>
-                    <option value="1.55">Moderate</option>
-                    <option value="1.725">Very Active</option>
-                </select>
-
-                <button type="button" onclick="generatePlan()">Generate Plan</button>
-            </form>
-
-            <div id="result"></div>
-        </div>
-    </section>
-
-   
-    <div id="chatIcon" onclick="toggleChat()">
-        💬
+    <div id="chatMessages" class="chat-messages" aria-live="polite">
+      <div class="msg bot">Hi! I am VyantraH. Ask me about diet or simple wellness tips.</div>
     </div>
 
-    
-    <div id="chatWindow">
-        <h3>Trainer Chatbot</h3>
-        <div id="chatbox"></div>
+    <form id="chatForm" class="chat-form" onsubmit="event.preventDefault(); submitChat();">
+      <input id="chatInput" type="text" placeholder="Type your question..." autocomplete="off" />
+      <button type="submit" id="sendBtn">Send</button>
+    </form>
+  </aside>
 
-        <div class="chat-input">
-            <input type="text" id="userInput" placeholder="Ask something...">
-            <button onclick="sendMessage()">Send</button>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
