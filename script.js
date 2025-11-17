@@ -1,74 +1,113 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VyantraH – Your Wellness Mate</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+document.addEventListener('DOMContentLoaded', () => {
 
-  <header>
-    <h1>VyantraH</h1>
-    <p class="tagline">Your Daily Wellness, Sorted.</p>
-  </header>
+  const chatIcon = document.getElementById('chatIcon');
+  const chatModal = document.getElementById('chatModal');
+  const chatOverlay = document.getElementById('chatOverlay');
+  const closeChat = document.getElementById('closeChat');
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const chatMessages = document.getElementById('chatMessages');
 
-  <main class="page">
-    <section class="center-wrap">
-      <div class="card" id="dietCard">
-        <h2>Diet Planner</h2>
+  const safeEl = (el) => !!el;
 
-        <form id="dietForm" onsubmit="event.preventDefault(); generatePlan();">
-          <label for="age">Age</label>
-          <input type="number" id="age" name="age" placeholder="Enter your age" />
+  function openChat() {
+    if (!safeEl(chatModal) || !safeEl(chatOverlay) || !safeEl(chatInput) || !safeEl(chatIcon)) return;
 
-          <label for="weight">Weight (kg)</label>
-          <input type="number" id="weight" name="weight" placeholder="Enter weight" />
+    // show elements
+    chatOverlay.classList.remove('hidden');
+    chatModal.classList.remove('hidden');
 
-          <label for="height">Height (cm)</label>
-          <input type="number" id="height" name="height" placeholder="Enter height" />
+    chatOverlay.classList.add('visible');
+    chatModal.classList.add('visible');
 
-          <label for="activity">Activity Level</label>
-          <select id="activity" name="activity">
-            <option value="1.2">Sedentary</option>
-            <option value="1.375">Light Activity</option>
-            <option value="1.55">Moderate</option>
-            <option value="1.725">Very Active</option>
-          </select>
+    chatOverlay.style.display = "block";
+    chatModal.style.display = "flex";
 
-          <button type="submit">Generate Plan</button>
-        </form>
+    // accessibility attrs
+    chatOverlay.setAttribute('aria-hidden', 'false');
+    chatModal.setAttribute('aria-hidden', 'false');
+    chatIcon.setAttribute('aria-expanded', 'true');
 
-        <div id="result" aria-live="polite"></div>
-      </div>
-    </section>
-  </main>
+    // focus input
+    setTimeout(() => {
+      try { chatInput.focus(); } catch (e) {}
+    }, 120);
+  }
 
-  <!-- Floating Bot Icon (aria-controls + aria-expanded for accessibility) -->
-  <button id="chatIcon" aria-label="Open VyantraH Chat" aria-controls="chatModal" aria-expanded="false" title="Ask VyantraH">
-    <span class="bot-emoji">💬</span>
-  </button>
+  function closeChatWindow() {
+    if (!safeEl(chatModal) || !safeEl(chatOverlay) || !safeEl(chatIcon)) return;
 
-  <!-- Overlay -->
-  <div id="chatOverlay" class="hidden" aria-hidden="true"></div>
+    chatModal.classList.remove('visible');
+    chatOverlay.classList.remove('visible');
 
-  <!-- Chat Popup -->
-  <aside id="chatModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="chatTitle" aria-hidden="true">
-    <header class="modal-header">
-      <h3 id="chatTitle">Trainer Chatbot</h3>
-      <button id="closeChat" class="close-btn" aria-label="Close chat">✕</button>
-    </header>
+    chatOverlay.setAttribute('aria-hidden', 'true');
+    chatModal.setAttribute('aria-hidden', 'true');
+    chatIcon.setAttribute('aria-expanded', 'false');
 
-    <div id="chatMessages" class="chat-messages" aria-live="polite">
-      <div class="msg bot">Hi! I’m VyantraH, ask me anything about your diet & wellness.</div>
-    </div>
+    // wait for CSS transition to finish then hide
+    setTimeout(() => {
+      chatModal.classList.add('hidden');
+      chatOverlay.classList.add('hidden');
+      chatModal.style.display = "none";
+      chatOverlay.style.display = "none";
+      // restore focus to icon
+      try { chatIcon.focus(); } catch (e) {}
+    }, 200);
+  }
 
-    <form id="chatForm" class="chat-form" autocomplete="off">
-      <input id="chatInput" name="chat" type="text" placeholder="Type your question..." />
-      <button type="submit" id="sendBtn" title="Send">➤</button>
-    </form>
-  </aside>
+  function appendMessage(sender, text) {
+    if (!safeEl(chatMessages)) return;
+    const m = document.createElement('div');
+    m.className = `msg ${sender}`;
+    m.textContent = text;
+    chatMessages.appendChild(m);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
 
-  <script src="script.js"></script>
-</body>
-</html>
+  // wire up events safely
+  if (safeEl(chatIcon)) chatIcon.addEventListener('click', openChat);
+  if (safeEl(closeChat)) closeChat.addEventListener('click', closeChatWindow);
+  if (safeEl(chatOverlay)) chatOverlay.addEventListener('click', closeChatWindow);
+  document.addEventListener('keydown', e => { if (e.key === "Escape") closeChatWindow(); });
+
+  if (safeEl(chatForm) && safeEl(chatInput)) {
+    chatForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      if (!text) return;
+      appendMessage('you', text);
+      chatInput.value = '';
+      setTimeout(() => appendMessage('bot', 'Working on your question…'), 300);
+    });
+  }
+
+  // DIET PLAN (basic)
+  window.generatePlan = function () {
+    const ageEl = document.getElementById("age");
+    const weightEl = document.getElementById("weight");
+    const heightEl = document.getElementById("height");
+    const activityEl = document.getElementById("activity");
+    const resultDiv = document.getElementById("result");
+
+    if (!ageEl || !weightEl || !heightEl || !resultDiv) return;
+
+    const age = Number(ageEl.value);
+    const weight = Number(weightEl.value);
+    const height = Number(heightEl.value);
+    const activity = Number(activityEl?.value) || 1.2;
+
+    if (!age || !weight || !height || Number.isNaN(activity)) {
+      resultDiv.innerHTML = "<p>Please fill all the details.</p>";
+      return;
+    }
+
+    const bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+    const calories = Math.round(bmr * activity);
+
+    resultDiv.innerHTML = `
+      <h3>Your Estimated Calories: ${calories}</h3>
+      <p>• Eat homemade Indian food.<br>• Add fruits.<br>• Include dal, paneer, eggs or chana.</p>
+    `;
+  };
+
+});
