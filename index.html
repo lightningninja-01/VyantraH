@@ -14,7 +14,7 @@
     </header>
 
     <section class="container">
-        <div class="card">
+        <div class="card" id="dietCard">
             <h2>Diet Planner</h2>
             <form id="dietForm">
                 <label>Age</label>
@@ -39,17 +39,23 @@
 
             <div id="result"></div>
         </div>
-
-        <div class="card chat">
-            <h2>Trainer Chatbot</h2>
-            <div id="chatbox"></div>
-
-            <div class="chat-input">
-                <input type="text" id="userInput" placeholder="Ask something...">
-                <button onclick="sendMessage()">Send</button>
-            </div>
-        </div>
     </section>
+
+   
+    <div id="chatIcon" onclick="toggleChat()">
+        💬
+    </div>
+
+    
+    <div id="chatWindow">
+        <h3>Trainer Chatbot</h3>
+        <div id="chatbox"></div>
+
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Ask something...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
