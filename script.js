@@ -1,105 +1,173 @@
-// wait for DOM to be ready for safety
-document.addEventListener('DOMContentLoaded', () => {
-  // elements
-  const chatIcon = document.getElementById('chatIcon');
-  const chatModal = document.getElementById('chatModal');
-  const chatOverlay = document.getElementById('chatOverlay');
-  const closeChat = document.getElementById('closeChat');
-  const chatForm = document.getElementById('chatForm');
-  const chatInput = document.getElementById('chatInput');
-  const chatMessages = document.getElementById('chatMessages');
+:root {
+  --bg: #f7f7f7;
+  --card: #ffffff;
+  --primary: #111;
+  --accent: #1f8feb;
+  --muted: #666;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: var(--bg);
+  color: var(--primary);
+}
 
-  // helper: safe-check element
-  function isEl(el){ return !!el; }
+/* HEADER */
+header {
+  text-align: center;
+  padding: 18px 12px;
+  background: #111;
+  color: #fff;
+}
+h1 { margin: 0; font-size: 28px; }
+.tagline { opacity: 0.85; }
 
-  // open
-  function openChat() {
-    if(!isEl(chatModal) || !isEl(chatOverlay) || !isEl(chatInput)) return;
+/* PAGE */
+.page { padding: 20px; }
+.center-wrap { display: flex; justify-content: center; }
+.card {
+  width: 380px;
+  background: var(--card);
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(14,20,30,0.06);
+}
+label { font-size: 13px; color: var(--muted); }
+input, select {
+  width: 100%;
+  padding: 10px 12px;
+  margin: 8px 0 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+button[type="submit"] {
+  padding: 12px;
+  background: #111;
+  color: #fff;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+button[type="submit"]:hover {
+  background: #222;
+}
 
-    // remove hidden (which has display:none !important)
-    chatOverlay.classList.remove('hidden');
-    chatModal.classList.remove('hidden');
+/* FLOATING CHAT ICON */
+#chatIcon {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  cursor: pointer;
+  font-size: 20px;
+}
 
-    // show and animate
-    chatOverlay.classList.add('visible');
-    chatModal.classList.add('visible');
+/* OVERLAY */
+#chatOverlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  display: none;
+  z-index: 1500;
+}
+#chatOverlay.visible { display: block; }
 
-    // ensure display values for older browsers (just in case)
-    chatOverlay.style.display = 'block';
-    chatModal.style.display = 'flex';
+/* CHAT POPUP */
+#chatModal {
+  position: fixed;
+  bottom: 80px;
+  right: 18px;
+  width: 340px;
+  background: var(--card);
+  border-radius: 12px;
+  display: none;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.25);
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(8px);
+  z-index: 1600;
+  transition: opacity .18s, transform .18s;
+}
+#chatModal.visible {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+}
 
-    // focus input after small delay
-    setTimeout(()=> chatInput.focus(), 120);
-  }
+/* HEADER */
+.modal-header {
+  position: relative;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+.close-btn {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  font-size: 18px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
 
-  // close
-  function closeChatWindow() {
-    if(!isEl(chatModal) || !isEl(chatOverlay)) return;
+/* MESSAGES */
+.chat-messages {
+  height: 300px;
+  padding: 12px;
+  overflow-y: auto;
+  background: #fbfbfd;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.msg {
+  max-width: 85%;
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+.msg.you {
+  align-self: flex-end;
+  background: #111;
+  color: #fff;
+}
+.msg.bot {
+  background: #eef6ff;
+  color: #003366;
+}
 
-    chatModal.classList.remove('visible');
-    chatOverlay.classList.remove('visible');
+/* CHAT INPUT + SMALL SEND BUTTON */
+.chat-form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-top: 1px solid #eee;
+}
+.chat-form input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+.chat-form button {
+  padding: 6px 10px;
+  min-width: 40px;
+  max-width: 45px;
+  height: 38px;
+  font-size: 16px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
 
-    // after animation, hide completely using hidden class (which uses !important)
-    setTimeout(()=> {
-      chatModal.style.display = 'none';
-      chatOverlay.style.display = 'none';
-      chatModal.classList.add('hidden');
-      chatOverlay.classList.add('hidden');
-    }, 200);
-  }
-
-  // append message helper
-  function appendMessage(sender, text){
-    if(!isEl(chatMessages)) return;
-    const d = document.createElement('div');
-    d.className = 'msg ' + (sender === 'you' ? 'you' : 'bot');
-    d.textContent = text;
-    chatMessages.appendChild(d);
-    // scroll smoothly
-    chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
-  }
-
-  // wire events safely
-  if(isEl(chatIcon)) chatIcon.addEventListener('click', openChat);
-  if(isEl(closeChat)) closeChat.addEventListener('click', closeChatWindow);
-  if(isEl(chatOverlay)) chatOverlay.addEventListener('click', closeChatWindow);
-  document.addEventListener('keydown', (e)=> { if(e.key === 'Escape') closeChatWindow(); });
-
-  // chat submit (enter or send)
-  if(isEl(chatForm)){
-    chatForm.addEventListener('submit', (ev)=>{
-      ev.preventDefault();
-      if(!isEl(chatInput)) return;
-      const text = chatInput.value.trim();
-      if(!text) return;
-      appendMessage('you', text);
-      chatInput.value = '';
-      // placeholder bot reply
-      setTimeout(()=> appendMessage('bot', 'Checking that — AI backend will reply soon.'), 300);
-    });
-  }
-
-  // Diet plan function (unchanged)
-  window.generatePlan = function() {
-    let age = document.getElementById("age").value;
-    let weight = document.getElementById("weight").value;
-    let height = document.getElementById("height").value;
-    let activity = parseFloat(document.getElementById("activity").value);
-    let resultDiv = document.getElementById("result");
-
-    if (!age || !weight || !height) {
-        resultDiv.innerHTML = "<p>Please fill all the details.</p>";
-        return;
-    }
-
-    let bmr = 10 * weight + 6.25 * height - 5 * age + 5;
-    let calories = Math.round(bmr * activity);
-
-    resultDiv.innerHTML = `
-        <h3>Your Estimated Calories: ${calories}</h3>
-        <p>• Eat simple Indian homemade food.<br>
-        • Add 1 fruit daily.<br>
-        • Include dal, paneer, eggs or chana for protein.</p>
-    `;
-  };
-});
+/* UTILITY */
+.hidden { display: none !important; }
