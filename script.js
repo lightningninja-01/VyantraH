@@ -10,15 +10,14 @@ function generatePlan() {
         return;
     }
 
-  
     let bmr = 10 * weight + 6.25 * height - 5 * age + 5;
     let calories = Math.round(bmr * activity);
 
     resultDiv.innerHTML = `
         <h3>Your Estimated Calories: ${calories}</h3>
         <p>• Eat simple Indian homemade food.<br>
-        • Add 1 fruit a day.<br>
-        • Keep protein sources like dal, paneer, eggs.</p>
+        • Add 1 fruit daily.<br>
+        • Include dal, paneer, eggs or chana for protein.</p>
     `;
 }
 
@@ -30,11 +29,13 @@ function sendMessage() {
     if (!message) return;
 
     chatbox.innerHTML += `<p><b>You:</b> ${message}</p>`;
-
-    
-    let reply = "I’ll answer better once AI backend is added!";
-    chatbox.innerHTML += `<p><b>Bot:</b> ${reply}</p>`;
+    chatbox.innerHTML += `<p><b>Bot:</b> AI response coming soon...</p>`;
 
     input.value = "";
     chatbox.scrollTop = chatbox.scrollHeight;
+}
+
+function toggleChat() {
+    const chatWindow = document.getElementById("chatWindow");
+    chatWindow.style.display = chatWindow.style.display === "block" ? "none" : "block";
 }
