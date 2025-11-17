@@ -8,11 +8,17 @@
 
 * { box-sizing: border-box; }
 
+html, body {
+  height: 100%;
+}
+
 body {
   margin: 0;
   font-family: "Poppins", sans-serif;
   background: var(--bg);
   color: var(--primary);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 
 /* HEADER */
@@ -38,12 +44,16 @@ h1 { margin: 0; font-size: 28px; }
 
 label { font-size: 13px; color: var(--muted); }
 
-input, select {
+input[type="number"], select, input[type="text"] {
   width: 100%;
   padding: 10px 12px;
   margin: 8px 0 14px;
   border-radius: 8px;
   border: 1px solid #d0d5db;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-clip: padding-box;
 }
 
 /* GENERATE BUTTON */
@@ -130,7 +140,7 @@ button[type="submit"]:hover { background: #222; }
   padding: 6px;
   border-radius: 6px;
 }
-.close-btn:hover { opacity: 0.8; }
+.close-btn:hover { opacity: 0.85; }
 
 /* MESSAGES AREA */
 .chat-messages {
@@ -157,51 +167,62 @@ button[type="submit"]:hover { background: #222; }
   color: #003366;
 }
 
-/* CHAT INPUT + CIRCULAR SEND BUTTON */
+/* CHAT INPUT + CIRCULAR SEND BUTTON - PIXEL-PERFECT ALIGNMENT */
 .chat-form {
   display: flex;
-  align-items: center;
+  align-items: center;         /* center vertically */
   gap: 8px;
   padding: 10px 12px;
   border-top: 1px solid #eee;
 }
 
-/* INPUT – clean & aligned */
+/* Input: exact height and no extra vertical padding */
 .chat-form input {
   flex: 1;
-  height: 40px;
-  padding: 0 12px;
+  height: 40px;                /* exact height */
+  padding: 0 12px;             /* horizontal padding only */
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 14px;
+  line-height: normal;         /* avoid browser-specific line-height issues */
   box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
-/* CIRCULAR SEND BUTTON */
+/* Make placeholder vertically centered on older browsers */
+.chat-form input::placeholder {
+  color: #9aa3ad;
+  opacity: 1;
+}
+
+/* Circular send button: same height, perfectly centered */
 .chat-form button {
   width: 40px;
   height: 40px;
   padding: 0;
-  border-radius: 50%;       /* ★ CIRCLE */
+  border-radius: 50%;
   background: var(--accent);
   color: white;
   border: none;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;          /* arrow size */
+  font-size: 18px;
   flex-shrink: 0;
+  -webkit-appearance: none;
 }
-.chat-form button:hover {
-  opacity: 0.9;
-}
+
+/* small tweak so button content sits exactly centered across browsers */
+.chat-form button > * { transform: translateY(0); }
 
 /* UTILITY */
 .hidden { display: none !important; }
 
 /* RESPONSIVE */
-@media (max-width:480px){
+@media (max-width:480px) {
   .card { width: 92%; padding: 16px; }
   #chatModal { width: 92%; right: 4%; bottom: 70px; }
   #chatIcon { right: 12px; bottom: 12px; }
