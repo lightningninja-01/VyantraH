@@ -44,8 +44,8 @@
     </section>
   </main>
 
-  <!-- Floating Bot Icon -->
-  <button id="chatIcon" aria-label="Open VyantraH Chat" title="Ask VyantraH">
+  <!-- Floating Bot Icon (aria-controls + aria-expanded for accessibility) -->
+  <button id="chatIcon" aria-label="Open VyantraH Chat" aria-controls="chatModal" aria-expanded="false" title="Ask VyantraH">
     <span class="bot-emoji">💬</span>
   </button>
 
@@ -53,7 +53,7 @@
   <div id="chatOverlay" class="hidden" aria-hidden="true"></div>
 
   <!-- Chat Popup -->
-  <aside id="chatModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="chatTitle">
+  <aside id="chatModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="chatTitle" aria-hidden="true">
     <header class="modal-header">
       <h3 id="chatTitle">Trainer Chatbot</h3>
       <button id="closeChat" class="close-btn" aria-label="Close chat">✕</button>
@@ -64,7 +64,7 @@
     </div>
 
     <form id="chatForm" class="chat-form" autocomplete="off">
-      <input id="chatInput" type="text" placeholder="Type your question..." />
+      <input id="chatInput" name="chat" type="text" placeholder="Type your question..." />
       <button type="submit" id="sendBtn" title="Send">➤</button>
     </form>
   </aside>
