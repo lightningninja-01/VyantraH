@@ -20,20 +20,35 @@
 
         <form id="dietForm" onsubmit="event.preventDefault(); generatePlan();">
           <label for="age">Age</label>
-          <input type="number" id="age" name="age" placeholder="Enter your age" />
+          <input type="number" id="age" name="age" placeholder="Enter your age" min="10" max="100" />
+
+          <label for="gender">Gender</label>
+          <select id="gender" name="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
 
           <label for="weight">Weight (kg)</label>
-          <input type="number" id="weight" name="weight" placeholder="Enter weight" />
+          <input type="number" id="weight" name="weight" placeholder="Enter weight (kg)" min="20" max="300" />
 
           <label for="height">Height (cm)</label>
-          <input type="number" id="height" name="height" placeholder="Enter height" />
+          <input type="number" id="height" name="height" placeholder="Enter height (cm)" min="80" max="250" />
 
           <label for="activity">Activity Level</label>
           <select id="activity" name="activity">
-            <option value="1.2">Sedentary</option>
-            <option value="1.375">Light Activity</option>
-            <option value="1.55">Moderate</option>
-            <option value="1.725">Very Active</option>
+            <option value="1.2">Sedentary (desk)</option>
+            <option value="1.375">Light (1–3 days/wk)</option>
+            <option value="1.55">Moderate (3–5 days/wk)</option>
+            <option value="1.725">Very Active (6–7 days/wk)</option>
+            <option value="1.9">Extra Active (manual job / twice/day)</option>
+          </select>
+
+          <label for="goal">Goal</label>
+          <select id="goal" name="goal">
+            <option value="maintain">Maintain weight</option>
+            <option value="lose">Lose weight (slow)</option>
+            <option value="lose_fast">Lose weight (faster)</option>
+            <option value="gain">Gain weight</option>
           </select>
 
           <button type="submit">Generate Plan</button>
@@ -44,7 +59,7 @@
     </section>
   </main>
 
-  <!-- Floating Bot Icon (aria-controls + aria-expanded for accessibility) -->
+  <!-- Floating Bot Icon -->
   <button id="chatIcon" aria-label="Open VyantraH Chat" aria-controls="chatModal" aria-expanded="false" title="Ask VyantraH">
     <span class="bot-emoji">💬</span>
   </button>
