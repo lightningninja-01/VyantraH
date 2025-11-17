@@ -47,21 +47,22 @@
     <span class="bot-emoji">💬</span>
   </button>
 
-  <!-- Chat modal popup (hidden by default) -->
-  <div id="chatOverlay" class="hidden"></div>
+  <!-- Transparent overlay (click outside to close) -->
+  <div id="chatOverlay" class="hidden" aria-hidden="true"></div>
 
+  <!-- Chat modal popup (bottom-right anchored) -->
   <aside id="chatModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="chatTitle">
     <header class="modal-header">
       <h3 id="chatTitle">Trainer Chatbot</h3>
-      <button id="closeChat" aria-label="Close chat">✕</button>
+      <button id="closeChat" class="close-btn" aria-label="Close chat">✕</button>
     </header>
 
     <div id="chatMessages" class="chat-messages" aria-live="polite">
       <div class="msg bot">Hi! I am VyantraH. Ask me about diet or simple wellness tips.</div>
     </div>
 
-    <form id="chatForm" class="chat-form" onsubmit="event.preventDefault(); submitChat();">
-      <input id="chatInput" type="text" placeholder="Type your question..." autocomplete="off" />
+    <form id="chatForm" class="chat-form" autocomplete="off">
+      <input id="chatInput" type="text" placeholder="Type your question..." />
       <button type="submit" id="sendBtn">Send</button>
     </form>
   </aside>
