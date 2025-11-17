@@ -8,6 +8,7 @@
 
 * { box-sizing: border-box; }
 
+/* BODY */
 body {
   margin: 0;
   font-family: "Poppins", sans-serif;
@@ -44,6 +45,9 @@ input, select {
   margin: 8px 0 14px;
   border-radius: 8px;
   border: 1px solid #d0d5db;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 /* GENERATE BUTTON */
@@ -175,6 +179,7 @@ button[type="submit"]:hover { background: #222; }
   border: 1px solid #ccc;
   font-size: 14px;
   box-sizing: border-box;
+  line-height: normal;
 }
 
 /* CIRCULAR SEND BUTTON */
@@ -195,6 +200,16 @@ button[type="submit"]:hover { background: #222; }
 }
 .chat-form button:hover {
   opacity: 0.9;
+}
+
+/* FOCUS (accessibility) */
+.chat-form input:focus,
+.chat-form button:focus,
+#chatIcon:focus,
+.close-btn:focus,
+button[type="submit"]:focus {
+  outline: 3px solid rgba(31,139,235,0.18);
+  outline-offset: 2px;
 }
 
 /* UTILITY */
