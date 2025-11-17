@@ -19,19 +19,19 @@
         <h2>Diet Planner</h2>
 
         <form id="dietForm" onsubmit="event.preventDefault(); generatePlan();">
-          <label for="age">Age</label>
-          <input type="number" id="age" name="age" placeholder="Enter your age" />
+          <label>Age</label>
+          <input type="number" id="age" placeholder="Enter your age">
 
-          <label for="weight">Weight (kg)</label>
-          <input type="number" id="weight" name="weight" placeholder="Enter weight" />
+          <label>Weight (kg)</label>
+          <input type="number" id="weight" placeholder="Enter weight">
 
-          <label for="height">Height (cm)</label>
-          <input type="number" id="height" name="height" placeholder="Enter height" />
+          <label>Height (cm)</label>
+          <input type="number" id="height" placeholder="Enter height">
 
-          <label for="activity">Activity Level</label>
-          <select id="activity" name="activity">
+          <label>Activity Level</label>
+          <select id="activity">
             <option value="1.2">Sedentary</option>
-            <option value="1.375">Light Activity</option>
+            <option value="1.375">Light</option>
             <option value="1.55">Moderate</option>
             <option value="1.725">Very Active</option>
           </select>
@@ -39,33 +39,31 @@
           <button type="submit">Generate Plan</button>
         </form>
 
-        <div id="result" aria-live="polite"></div>
+        <div id="result"></div>
       </div>
     </section>
   </main>
 
-  <!-- Floating Bot Icon -->
-  <button id="chatIcon" aria-label="Open VyantraH Chat" title="Ask VyantraH">
-    <span class="bot-emoji">💬</span>
-  </button>
+  <!-- Floating bot icon -->
+  <button id="chatIcon" title="Chat"><span class="bot-emoji">💬</span></button>
 
   <!-- Overlay -->
-  <div id="chatOverlay" class="hidden" aria-hidden="true"></div>
+  <div id="chatOverlay" class="hidden"></div>
 
-  <!-- Chat Popup -->
-  <aside id="chatModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="chatTitle">
+  <!-- Chat Window -->
+  <aside id="chatModal" class="hidden">
     <header class="modal-header">
-      <h3 id="chatTitle">Trainer Chatbot</h3>
-      <button id="closeChat" class="close-btn" aria-label="Close chat">✕</button>
+      <h3>Trainer Chatbot</h3>
+      <button id="closeChat" class="close-btn">✕</button>
     </header>
 
-    <div id="chatMessages" class="chat-messages" aria-live="polite">
-      <div class="msg bot">Hi! I’m VyantraH, ask me anything about your diet & wellness.</div>
+    <div id="chatMessages" class="chat-messages">
+      <div class="msg bot">Hi! I'm VyantraH, ask me anything about your diet & wellness.</div>
     </div>
 
-    <form id="chatForm" class="chat-form" autocomplete="off">
-      <input id="chatInput" type="text" placeholder="Type your question..." />
-      <button type="submit" id="sendBtn" title="Send">➤</button>
+    <form id="chatForm" class="chat-form">
+      <input id="chatInput" type="text" placeholder="Type your question...">
+      <button id="sendBtn" type="submit">➤</button>
     </form>
   </aside>
 
