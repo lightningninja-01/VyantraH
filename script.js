@@ -1,81 +1,74 @@
-document.addEventListener('DOMContentLoaded', () => {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VyantraH – Your Wellness Mate</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
-  const chatIcon = document.getElementById('chatIcon');
-  const chatModal = document.getElementById('chatModal');
-  const chatOverlay = document.getElementById('chatOverlay');
-  const closeChat = document.getElementById('closeChat');
-  const chatForm = document.getElementById('chatForm');
-  const chatInput = document.getElementById('chatInput');
-  const chatMessages = document.getElementById('chatMessages');
+  <header>
+    <h1>VyantraH</h1>
+    <p class="tagline">Your Daily Wellness, Sorted.</p>
+  </header>
 
-  function openChat() {
-    if (!chatModal || !chatOverlay) return;
-    chatOverlay.classList.remove('hidden');
-    chatModal.classList.remove('hidden');
-    chatOverlay.classList.add('visible');
-    chatModal.classList.add('visible');
-    chatOverlay.style.display = "block";
-    chatModal.style.display = "flex";
-    setTimeout(() => chatInput && chatInput.focus(), 120);
-  }
+  <main class="page">
+    <section class="center-wrap">
+      <div class="card" id="dietCard">
+        <h2>Diet Planner</h2>
 
-  function closeChatWindow() {
-    if (!chatModal || !chatOverlay) return;
-    chatModal.classList.remove('visible');
-    chatOverlay.classList.remove('visible');
-    setTimeout(() => {
-      chatModal.classList.add('hidden');
-      chatOverlay.classList.add('hidden');
-      chatModal.style.display = "none";
-      chatOverlay.style.display = "none";
-    }, 200);
-  }
+        <form id="dietForm" onsubmit="event.preventDefault(); generatePlan();">
+          <label for="age">Age</label>
+          <input type="number" id="age" name="age" placeholder="Enter your age" />
 
-  function appendMessage(sender, text) {
-    if (!chatMessages) return;
-    const m = document.createElement('div');
-    m.className = `msg ${sender}`;
-    m.textContent = text;
-    chatMessages.appendChild(m);
-    chatMessages.scrollTo({ top: chatMessages.scrollHeight, behavior: 'smooth' });
-  }
+          <label for="weight">Weight (kg)</label>
+          <input type="number" id="weight" name="weight" placeholder="Enter weight" />
 
-  if (chatIcon) chatIcon.addEventListener('click', openChat);
-  if (closeChat) closeChat.addEventListener('click', closeChatWindow);
-  if (chatOverlay) chatOverlay.addEventListener('click', closeChatWindow);
-  document.addEventListener('keydown', e => { if (e.key === "Escape") closeChatWindow(); });
+          <label for="height">Height (cm)</label>
+          <input type="number" id="height" name="height" placeholder="Enter height" />
 
-  if (chatForm) {
-    chatForm.addEventListener('submit', e => {
-      e.preventDefault();
-      const text = chatInput.value.trim();
-      if (!text) return;
-      appendMessage('you', text);
-      chatInput.value = '';
-      setTimeout(() => appendMessage('bot', 'Working on your question…'), 300);
-    });
-  }
+          <label for="activity">Activity Level</label>
+          <select id="activity" name="activity">
+            <option value="1.2">Sedentary</option>
+            <option value="1.375">Light Activity</option>
+            <option value="1.55">Moderate</option>
+            <option value="1.725">Very Active</option>
+          </select>
 
-  // DIET PLAN (basic)
-  window.generatePlan = function () {
-    const age = document.getElementById("age").value;
-    const weight = document.getElementById("weight").value;
-    const height = document.getElementById("height").value;
-    const activity = parseFloat(document.getElementById("activity").value || "1.2");
-    const resultDiv = document.getElementById("result");
+          <button type="submit">Generate Plan</button>
+        </form>
 
-    if (!age || !weight || !height) {
-      resultDiv.innerHTML = "<p>Please fill all the details.</p>";
-      return;
-    }
+        <div id="result" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
 
-    const bmr = 10 * Number(weight) + 6.25 * Number(height) - 5 * Number(age) + 5;
-    const calories = Math.round(bmr * activity);
+  <!-- Floating Bot Icon (aria-controls + aria-expanded for accessibility) -->
+  <button id="chatIcon" aria-label="Open VyantraH Chat" aria-controls="chatModal" aria-expanded="false" title="Ask VyantraH">
+    <span class="bot-emoji">💬</span>
+  </button>
 
-    resultDiv.innerHTML = `
-      <h3>Your Estimated Calories: ${calories}</h3>
-      <p>• Eat homemade Indian food.<br>• Add fruits.<br>• Include dal, paneer, eggs or chana.</p>
-    `;
-  };
+  <!-- Overlay -->
+  <div id="chatOverlay" class="hidden" aria-hidden="true"></div>
 
-});
+  <!-- Chat Popup -->
+  <aside id="chatModal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="chatTitle" aria-hidden="true">
+    <header class="modal-header">
+      <h3 id="chatTitle">Trainer Chatbot</h3>
+      <button id="closeChat" class="close-btn" aria-label="Close chat">✕</button>
+    </header>
+
+    <div id="chatMessages" class="chat-messages" aria-live="polite">
+      <div class="msg bot">Hi! I’m VyantraH, ask me anything about your diet & wellness.</div>
+    </div>
+
+    <form id="chatForm" class="chat-form" autocomplete="off">
+      <input id="chatInput" name="chat" type="text" placeholder="Type your question..." />
+      <button type="submit" id="sendBtn" title="Send">➤</button>
+    </form>
+  </aside>
+
+  <script src="script.js"></script>
+</body>
+</html>
