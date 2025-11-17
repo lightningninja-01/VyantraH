@@ -162,29 +162,36 @@ button[type="submit"]:hover { background: #222; }
   padding: 10px 12px;
   border-top: 1px solid #eee;
 }
+
+/* INPUT – exact same height as send button */
 .chat-form input {
   flex: 1;
-  padding: 10px 12px;
+  height: 40px;               /* unified height */
+  padding: 0 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  height: 38px;           /* match send button height */
   font-size: 14px;
+  line-height: 40px;          /* centers text vertically */
+  box-sizing: border-box;     /* ensures correct sizing */
 }
+
+/* SEND BUTTON – now matches input height exactly */
 .chat-form button {
-  padding: 0;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;               /* same height as input */
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 18px;
   border-radius: 8px;
   background: var(--accent);
   color: white;
   border: none;
   cursor: pointer;
+  padding: 0;
   flex-shrink: 0;
 }
+
 
 /* UTILITY */
 .hidden { display: none !important; }
