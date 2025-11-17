@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VyantraH – Your Wellness Mate</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>VyantraH</h1>
+        <p class="tagline">Your Daily Wellness, Sorted.</p>
+    </header>
+
+    <section class="container">
+        <div class="card">
+            <h2>Diet Planner</h2>
+            <form id="dietForm">
+                <label>Age</label>
+                <input type="number" id="age" placeholder="Enter your age">
+
+                <label>Weight (kg)</label>
+                <input type="number" id="weight" placeholder="Enter weight">
+
+                <label>Height (cm)</label>
+                <input type="number" id="height" placeholder="Enter height">
+
+                <label>Activity Level</label>
+                <select id="activity">
+                    <option value="1.2">Sedentary</option>
+                    <option value="1.375">Light Activity</option>
+                    <option value="1.55">Moderate</option>
+                    <option value="1.725">Very Active</option>
+                </select>
+
+                <button type="button" onclick="generatePlan()">Generate Plan</button>
+            </form>
+
+            <div id="result"></div>
+        </div>
+
+        <div class="card chat">
+            <h2>Trainer Chatbot</h2>
+            <div id="chatbox"></div>
+
+            <div class="chat-input">
+                <input type="text" id="userInput" placeholder="Ask something...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
