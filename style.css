@@ -8,17 +8,12 @@
 
 * { box-sizing: border-box; }
 
-html, body {
-  height: 100%;
-}
-
+/* BODY */
 body {
   margin: 0;
   font-family: "Poppins", sans-serif;
   background: var(--bg);
   color: var(--primary);
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
 }
 
 /* HEADER */
@@ -29,11 +24,12 @@ header {
   color: #fff;
 }
 h1 { margin: 0; font-size: 28px; }
-.tagline { opacity: 0.85; margin-top:6px; font-size:13px; }
 
-/* PAGE */
-.page { padding: 20px; min-height: calc(100vh - 120px); }
+/* LAYOUT */
+.page { padding: 20px; }
 .center-wrap { display: flex; justify-content: center; }
+
+/* CARD */
 .card {
   width: 380px;
   background: var(--card);
@@ -41,22 +37,18 @@ h1 { margin: 0; font-size: 28px; }
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(14,20,30,0.06);
 }
-
 label { font-size: 13px; color: var(--muted); }
 
-input[type="number"], select, input[type="text"] {
+/* INPUTS */
+input, select {
   width: 100%;
   padding: 10px 12px;
   margin: 8px 0 14px;
   border-radius: 8px;
   border: 1px solid #d0d5db;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background-clip: padding-box;
 }
 
-/* GENERATE BUTTON */
+/* BUTTON */
 button[type="submit"] {
   padding: 12px;
   background: #111;
@@ -65,9 +57,8 @@ button[type="submit"] {
   border: none;
   cursor: pointer;
 }
-button[type="submit"]:hover { background: #222; }
 
-/* FLOATING CHAT ICON */
+/* CHAT ICON */
 #chatIcon {
   position: fixed;
   right: 18px;
@@ -77,23 +68,16 @@ button[type="submit"]:hover { background: #222; }
   border-radius: 50%;
   border: none;
   background: #fff;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-  cursor: pointer;
   font-size: 20px;
-  z-index: 1400;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  cursor: pointer;
+  z-index: 999;
 }
 
 /* OVERLAY */
-#chatOverlay {
-  position: fixed;
-  inset: 0;
-  background: transparent;
-  display: none;
-  z-index: 1500;
-}
-#chatOverlay.visible { display: block; }
+#chatOverlay.hidden { display: none; }
 
-/* CHAT POPUP */
+/* CHAT WINDOW */
 #chatModal {
   position: fixed;
   bottom: 80px;
@@ -101,53 +85,40 @@ button[type="submit"]:hover { background: #222; }
   width: 340px;
   background: var(--card);
   border-radius: 12px;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.25);
   display: none;
   flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 18px 50px rgba(0,0,0,0.25);
-  opacity: 0;
-  transform: translateY(8px);
-  z-index: 1600;
-  transition: opacity .18s, transform .18s;
-}
-#chatModal.visible {
-  display: flex;
-  opacity: 1;
-  transform: translateY(0);
+  z-index: 1000;
 }
 
-/* CHAT HEADER */
+/* SHOW CHAT */
+#chatModal.visible { display: flex; }
+#chatOverlay.visible { display: block; }
+
+/* HEADER */
 .modal-header {
   position: relative;
-  padding: 10px 12px;
-  border-bottom: 1px solid #eee;
+  padding: 10px;
   background: #000;
   color: #fff;
 }
-.modal-header h3 { margin: 0; font-size: 15px; }
-
-/* CLOSE (X) BUTTON */
 .close-btn {
   position: absolute;
-  right: 12px;
-  top: 8px;
-  font-size: 18px;
-  border: none;
+  right: 10px;
+  top: 6px;
   background: none;
+  border: none;
+  font-size: 18px;
+  color: #fff;
   cursor: pointer;
-  color: #ffffff;
-  font-weight: 600;
-  padding: 6px;
-  border-radius: 6px;
 }
-.close-btn:hover { opacity: 0.85; }
 
-/* MESSAGES AREA */
+/* CHAT MESSAGES */
 .chat-messages {
   height: 300px;
   padding: 12px;
   overflow-y: auto;
-  background: #fbfbfd;
+  background: #f6f6fc;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -157,73 +128,41 @@ button[type="submit"]:hover { background: #222; }
   padding: 10px 12px;
   border-radius: 10px;
 }
-.msg.you {
-  align-self: flex-end;
-  background: #111;
-  color: #fff;
-}
-.msg.bot {
-  background: #eef6ff;
-  color: #003366;
-}
+.msg.you { align-self: flex-end; background: #111; color: #fff; }
+.msg.bot { background: #ddefff; }
 
-/* CHAT INPUT + CIRCULAR SEND BUTTON - PIXEL-PERFECT ALIGNMENT */
+/* CHAT FORM — PERFECT FIX */
 .chat-form {
   display: flex;
-  align-items: center;         /* center vertically */
+  align-items: center;
   gap: 8px;
-  padding: 10px 12px;
+  padding: 10px;
   border-top: 1px solid #eee;
 }
 
-/* Input: exact height and no extra vertical padding */
+/* INPUT FIXED HEIGHT */
 .chat-form input {
   flex: 1;
-  height: 40px;                /* exact height */
-  padding: 0 12px;             /* horizontal padding only */
+  height: 40px;
+  padding: 0 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 14px;
-  line-height: normal;         /* avoid browser-specific line-height issues */
   box-sizing: border-box;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+  line-height: normal;
 }
 
-/* Make placeholder vertically centered on older browsers */
-.chat-form input::placeholder {
-  color: #9aa3ad;
-  opacity: 1;
-}
-
-/* Circular send button: same height, perfectly centered */
+/* CIRCULAR BUTTON FIXED HEIGHT */
 .chat-form button {
   width: 40px;
   height: 40px;
-  padding: 0;
   border-radius: 50%;
   background: var(--accent);
-  color: white;
+  color: #fff;
   border: none;
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   font-size: 18px;
-  flex-shrink: 0;
-  -webkit-appearance: none;
-}
-
-/* small tweak so button content sits exactly centered across browsers */
-.chat-form button > * { transform: translateY(0); }
-
-/* UTILITY */
-.hidden { display: none !important; }
-
-/* RESPONSIVE */
-@media (max-width:480px) {
-  .card { width: 92%; padding: 16px; }
-  #chatModal { width: 92%; right: 4%; bottom: 70px; }
-  #chatIcon { right: 12px; bottom: 12px; }
 }
