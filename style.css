@@ -54,7 +54,7 @@ input, select {
 button[type="submit"] {
   padding: 12px;
   background: #111;
-  color: #fff;
+  color: #000;
   border-radius: 8px;
   border: none;
   cursor: pointer;
